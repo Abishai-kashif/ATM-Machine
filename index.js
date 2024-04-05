@@ -24,7 +24,7 @@ if (Number(pinAnswer.pin) === pin) {
         name: "operation",
         type: "list",
         message: "select the operation :",
-        choices: ["Deposit Cash", "Withdraw Cash", "Current Balance"]
+        choices: ["Deposit Cash", "Withdraw Cash", "Current Balance", "Exit"]
     });
     console.log(""); // leaving some empty lines
     // if selected operation is deposit
@@ -35,21 +35,20 @@ if (Number(pinAnswer.pin) === pin) {
             message: "Enter amount : "
         });
         //checks if amount is less than deposit limit
-        if (deposit.amount1 <= depositLimit) {
-            currentBalance += deposit.amount1;
-            console.log(chalk.white.bold(`\n-> Congrats! You have deposited : ${chalk.greenBright(`${deposit.amount1}$`)}.`));
-            if (currentBalance === 0) {
-                console.log(chalk.white.bold(`-> Your current balance is ${chalk.red(`${currentBalance}$`)}.`));
+        if (deposit.amount1 != 0) {
+            if (deposit.amount1 <= depositLimit) {
+                currentBalance += deposit.amount1;
+                console.log(chalk.white.bold(`\n-> Congrats! You have deposited : ${chalk.greenBright(`${deposit.amount1}$`)}.`));
+                console.log(chalk.white.bold(`-> Your current balance is : ${chalk.greenBright(`${currentBalance}$`)}.`));
             }
             else {
-                console.log(chalk.white.bold(`-> Your current balance is : ${chalk.greenBright(`${currentBalance}$`)}.`));
+                console.log(chalk.red(`-> You exceeded your maximum deposit limit : ${depositLimit}$`));
             }
             ;
         }
         else {
-            console.log(chalk.red(`You exceeded your maximum deposit limit : ${depositLimit}$`));
+            console.log(chalk.red("-> For deposit amount must be greater than zero."));
         }
-        ;
     }
     ;
     // if selected operation is withdrawal
@@ -97,21 +96,26 @@ if (Number(pinAnswer.pin) === pin) {
                 message: "Enter amount : "
             });
             //checks if amount is less than current balance
-            if (deduct.amount <= currentBalance) {
-                currentBalance -= deduct.amount;
-                console.log(chalk.white.bold(`\n-> Congrats! You have withdrawn : ${chalk.greenBright(`${deduct.amount}$`)}.`));
-                if (currentBalance === 0) {
-                    console.log(chalk.white.bold(`-> Your remaining balance is ${chalk.red(`${currentBalance}$`)}.`));
+            if (deduct.amount != 0) {
+                if (deduct.amount <= currentBalance) {
+                    currentBalance -= deduct.amount;
+                    console.log(chalk.white.bold(`\n-> Congrats! You have withdrawn : ${chalk.greenBright(`${deduct.amount}$`)}.`));
+                    if (currentBalance === 0) {
+                        console.log(chalk.white.bold(`-> Your remaining balance is ${chalk.red(`${currentBalance}$`)}.`));
+                    }
+                    else {
+                        console.log(chalk.white.bold(`-> Your remaining balance is : ${chalk.greenBright(`${currentBalance}$`)}.`));
+                    }
+                    ;
                 }
                 else {
-                    console.log(chalk.white.bold(`-> Your remaining balance is : ${chalk.greenBright(`${currentBalance}$`)}.`));
+                    console.log(chalk.red("Your current balance is insufficient for this withdrawal."));
                 }
                 ;
             }
             else {
-                console.log(chalk.red("Your current balance is insufficient for this withdrawal."));
+                console.log(chalk.red("-> For withdrawal amount must be greater than zero."));
             }
-            ;
         }
         ;
     }
@@ -125,6 +129,10 @@ if (Number(pinAnswer.pin) === pin) {
             console.log(chalk.white.bold(`-> Your current balance is : ${chalk.greenBright(`${currentBalance}$`)}.`));
         }
         ;
+    }
+    ;
+    if (selectedOperation.operation === "Exit") {
+        //do nothing,since we are exiting
     }
     ;
     //thank you message

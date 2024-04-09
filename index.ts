@@ -14,7 +14,7 @@ let depositLimit: number = 200000;
 //welcome message
 console.log((`\n\t\t\t\t   <<========================>>`));
 console.log(`\t\t<<==={==={==={==={  ${chalk.blueBright("WELCOME TO MY ATM MACHINE!")}  }===}===}===}===>>`);
-console.log((`\t\t\t\t   <<========================>>\n\n`));
+console.log((`\t\t\t\t   <<========================>>\n`));
 
 
 // asking user to enter the pin
@@ -30,8 +30,12 @@ let pinAnswer = await inquirer.prompt(
 //checks if pin is correct
 if (Number(pinAnswer.pin) === pin) {
 
-    console.log(chalk.greenBright("Your pin is correct login successfully\n"));
+    console.log(chalk.greenBright("Your pin is correct login successfully"));
     
+
+while (true) {
+
+    console.log();// printing empty line
 
     //asking user to select operation
     let selectedOperation = await inquirer.prompt(
@@ -39,11 +43,12 @@ if (Number(pinAnswer.pin) === pin) {
             name: "operation",
             type: "list",
             message: "select the operation :",
-            choices: ["Deposit Cash", "Withdraw Cash", "Current Balance" ,"Exit"]
+            choices: ["Deposit Cash", "Withdraw Cash", "Current Balance" ,chalk.red("Exit")]
         }
     );
 
-    console.log("");// leaving some empty lines
+    console.log();
+
 
 
     // if selected operation is deposit
@@ -169,12 +174,14 @@ if (Number(pinAnswer.pin) === pin) {
         };
     };
 
-    if (selectedOperation.operation === "Exit") {
-        //do nothing,since we are exiting
+    if (selectedOperation.operation === chalk.red("Exit")) {
+        break;
     };
 
+};
+
     //thank you message
-    console.log((`\n\n\t\t\t\t   =======================`));
+    console.log((`\n\t\t\t\t   =======================`));
     console.log(`\t\t\t\t   ${chalk.blueBright("Thank you for visiting!")}`);
     console.log((`\t\t\t\t   =======================\n`));
 

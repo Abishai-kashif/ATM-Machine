@@ -1,6 +1,6 @@
 {
   "name": "project_atm_machine_by_abishai",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "making a simple ATM machine",
   "main": "index.js",
   "type": "module",

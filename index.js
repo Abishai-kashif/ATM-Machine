@@ -1,20 +1,29 @@
 #! /usr/bin/env node
 import inquirer from "inquirer";
 import chalk from "chalk";
+import { LowSync } from "lowdb";
+import { JSONFileSync } from "lowdb/node";
+console.clear();
 // initializing user pin and current balnce
 let pin = 1234;
 let currentBalance = 10000;
 //limit for deposit at a time
 let depositLimit = 200000;
+let database;
+// initializing lowdb
+database = new LowSync(new JSONFileSync("atm.json"), {
+    balance: 0,
+});
+database.read();
 //welcome message
-console.log((`\n\t\t\t\t   <<========================>>`));
+console.log(`\n\t\t\t\t   <<========================>>`);
 console.log(`\t\t<<==={==={==={==={  ${chalk.blueBright("WELCOME TO MY ATM MACHINE!")}  }===}===}===}===>>`);
-console.log((`\t\t\t\t   <<========================>>\n`));
+console.log(`\t\t\t\t   <<========================>>\n`);
 // asking user to enter the pin
 let pinAnswer = await inquirer.prompt({
     name: "pin",
     type: "password",
-    message: "Kindly enter your pin : "
+    message: "Kindly enter your pin : ",
 });
 //checks if pin is correct
 if (Number(pinAnswer.pin) === pin) {
@@ -26,7 +35,12 @@ if (Number(pinAnswer.pin) === pin) {
             name: "operation",
             type: "list",
             message: "select the operation :",
-            choices: ["Deposit Cash", "Withdraw Cash", "Current Balance", chalk.red("Exit")]
+            choices: [
+                "Deposit Cash",
+                "Withdraw Cash",
+                "Current Balance",
+                chalk.red("Exit"),
+            ],
         });
         console.log();
         // if selected operation is deposit
@@ -34,7 +48,7 @@ if (Number(pinAnswer.pin) === pin) {
             let deposit = await inquirer.prompt({
                 name: "amount1",
                 type: "number",
-                message: "Enter amount : "
+                message: "Enter amount : ",
             });
             //checks if amount is less than deposit limit
             if (deposit.amount1 != 0) {
@@ -46,13 +60,11 @@ if (Number(pinAnswer.pin) === pin) {
                 else {
                     console.log(chalk.red(`-> You exceeded your maximum deposit limit : ${depositLimit}$`));
                 }
-                ;
             }
             else {
                 console.log(chalk.red("-> For deposit amount must be greater than zero."));
             }
         }
-        ;
         // if selected operation is withdrawal
         if (selectedOperation.operation === "Withdraw Cash") {
             //ask for method of withdrawal
@@ -60,7 +72,7 @@ if (Number(pinAnswer.pin) === pin) {
                 name: "method",
                 type: "list",
                 message: "Choose withdrawal method :",
-                choices: ["Fast Cash", "Enter Amount"]
+                choices: ["Fast Cash", "Enter Amount"],
             });
             console.log(""); // leaving some empty lines
             // if selected method is fast cash
@@ -70,7 +82,7 @@ if (Number(pinAnswer.pin) === pin) {
                     name: "selectedAmount",
                     type: "list",
                     message: "Select the amount :",
-                    choices: ["500", "1000", "5000", "10000"]
+                    choices: ["500", "1000", "5000", "10000"],
                 });
                 if (selectedAmounts.selectedAmount <= currentBalance) {
                     currentBalance -= selectedAmounts.selectedAmount;
@@ -82,20 +94,17 @@ if (Number(pinAnswer.pin) === pin) {
                     else {
                         console.log(chalk.white.bold(`-> The remaining balance is : ${chalk.greenBright(`${currentBalance}$`)}.`));
                     }
-                    ;
                 }
                 else {
                     console.log(chalk.red("Your current balance is insufficient for this withdrawal."));
                 }
-                ;
             }
-            ;
             // if selected method is enter amount
             if (selectedMethod.method === "Enter Amount") {
                 let deduct = await inquirer.prompt({
                     name: "amount",
                     type: "number",
-                    message: "Enter amount : "
+                    message: "Enter amount : ",
                 });
                 //checks if amount is less than current balance
                 if (deduct.amount != 0) {
@@ -108,20 +117,16 @@ if (Number(pinAnswer.pin) === pin) {
                         else {
                             console.log(chalk.white.bold(`-> Your remaining balance is : ${chalk.greenBright(`${currentBalance}$`)}.`));
                         }
-                        ;
                     }
                     else {
                         console.log(chalk.red("Your current balance is insufficient for this withdrawal."));
                     }
-                    ;
                 }
                 else {
                     console.log(chalk.red("-> For withdrawal amount must be greater than zero."));
                 }
             }
-            ;
         }
-        ;
         // if selected operation is current balance
         if (selectedOperation.operation === "Current Balance") {
             if (currentBalance === 0) {
@@ -130,21 +135,16 @@ if (Number(pinAnswer.pin) === pin) {
             else {
                 console.log(chalk.white.bold(`-> Your current balance is : ${chalk.greenBright(`${currentBalance}$`)}.`));
             }
-            ;
         }
-        ;
         if (selectedOperation.operation === chalk.red("Exit")) {
             break;
         }
-        ;
     }
-    ;
     //thank you message
-    console.log((`\n\t\t\t\t   =======================`));
+    console.log(`\n\t\t\t\t   =======================`);
     console.log(`\t\t\t\t   ${chalk.blueBright("Thank you for visiting!")}`);
-    console.log((`\t\t\t\t   =======================\n`));
+    console.log(`\t\t\t\t   =======================\n`);
 }
 else {
     console.log(chalk.red("-> Invalid pin."));
 }
-;
